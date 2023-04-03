@@ -62,7 +62,7 @@ public class Pass
         shooterWin = winOrLose;
     }
 
-    public void settleBets(boolean shooterWin, ArrayList<Integer> playerList)
+    public void settleBets(boolean shooterWin, ArrayList<Player> playerList)
     {
 
     }
