@@ -64,7 +64,28 @@ public class Pass
 
     public void settleBets(boolean shooterWin, ArrayList<Player> playerList)
     {
-
+        for (Player player : playerList)
+        {
+            if (player.getIsShooter()) // this player is the shooter
+            {
+                if (shooterWin)
+                {
+                    player.setBankBalance(player.getBankBalance() + actionAmountCovered);
+                } else
+                {
+                    player.setBankBalance(player.getBankBalance() - actionAmountCovered);
+                }
+            } else // this player is an opponent
+            {
+                if (shooterWin)
+                {
+                    player.setBankBalance(player.getBankBalance() - player.getAmountBet());
+                } else
+                {
+                    player.setBankBalance(player.getBankBalance() + player.getAmountBet());
+                }
+            }
+        }
     }
 
     public boolean shootOrPass()
