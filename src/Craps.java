@@ -27,6 +27,7 @@ public class Craps extends JFrame
         // slider creation inside constructor
         JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 6, 2);
         slider.setMajorTickSpacing(1);
+        slider.setPaintTicks(true);
 
         slider.addChangeListener(new SliderHandler());
 
