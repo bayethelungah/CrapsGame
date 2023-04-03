@@ -14,6 +14,8 @@ import java.awt.event.*;
 
 public class Craps extends JFrame
 {
+    //testcommit
+    private JLabel textNumPlayers;
     private JMenuBar navBar;
     private int numOfPlayers;
 
