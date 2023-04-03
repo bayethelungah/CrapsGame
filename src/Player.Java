@@ -1,5 +1,5 @@
 /*
- * Class name: Die
+ * Class name: Player
  * Purpose: represents a die that can be rolled
  * Coder: Bayethe Lungah and Keenan
  * Date: April 3, 2023 
