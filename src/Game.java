@@ -11,10 +11,10 @@ public class Game
 {
     private int totalPotAmount;
     private ArrayList<Player>playerList;
-    private ArrayList<Pass>
 
-    public Game(){
-        
+    public Game() {
+        totalPotAmount = 0;
+        playerList = new ArrayList<Player>();
     }
 
     public ArrayList<Player> getPlayerList() {
