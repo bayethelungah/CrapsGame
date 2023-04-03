@@ -16,7 +16,7 @@ public class Game
         totalPotAmount = 0;
         playerList = new ArrayList<Player>();
     }
-    
+
     public ArrayList<Player> getPlayerList()
     {
         return playerList;
@@ -27,9 +27,11 @@ public class Game
         return totalPotAmount;
     }
 
-    public void populatePlayerList()
+    public void populatePlayerList(int numPlayers)
     {
-
+        for (int i = 0; i < numPlayers; i++){
+            playerList.add(new Player(""));
+        }
     }
 
     public boolean checkForGameWinner(){
