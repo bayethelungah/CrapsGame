@@ -48,7 +48,7 @@ public class Craps extends JFrame
         {
             if (event.getStateChange() == ItemEvent.SELECTED)
             {
-                JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Instructions", "Instructions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
