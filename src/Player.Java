@@ -16,48 +16,43 @@ public class Player
     public Player(String name)
     {
         this.name = name;
+        bankBalance = 100;
+        isShooter = false;
+        betAmount = 0;
+        passCompleted = false;
     }
-
     public String getName()
     {
         return name;
     }
-
     public int getBankBalance()
     {
         return bankBalance;
     }
-
     public void setBankBalance(int newBalance)
     {
         bankBalance = newBalance;
     }
-
     public boolean getIsShooter()
     {
         return isShooter;
     }
-
     public void setIsShooter(boolean value)
     {
         isShooter = value;
     }
-
     public int getAmountBet()
     {
         return betAmount;
     }
-
     public void setAmountBet(int betAmount)
     {
         this.betAmount = betAmount;
     }
-
     public boolean getPassCompleted()
     {
         return passCompleted;
     }
-
     public void setPassCompleted(boolean value)
     {
         passCompleted = value;
