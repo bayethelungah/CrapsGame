@@ -34,7 +34,12 @@ public class Game
         }
     }
 
-    public boolean checkForGameWinner(){
-        return true;
+    public boolean checkForGameWinner(ArrayList<Player>list){
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).getBankBalance() == totalPotAmount){
+                return true;
+            }
+        }
+        return false;
     }
 }
