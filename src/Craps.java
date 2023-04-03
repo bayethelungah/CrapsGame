@@ -36,17 +36,7 @@ public class Craps extends JFrame
         // slider creation inside constructor
         currentGame = new Game();
         createScenes();
-
-        aboutMenu = new JMenu("About");
-        instructionsMenu = new JMenu("Instructions");
-
-        navBar = new JMenuBar();
-
-        aboutMenu.addItemListener(new MenuListener());
-        instructionsMenu.addItemListener(new MenuListener());
-
-        navBar.add(instructionsMenu);
-        navBar.add(aboutMenu);
+        createNavBar();
 
         this.add(navBar, BorderLayout.NORTH);
         this.add(scenes.get(sceneIndex), BorderLayout.CENTER);
@@ -79,9 +69,10 @@ public class Craps extends JFrame
 
         JPanel secondScene = new JPanel();
         secondScene.setLayout(new GridBagLayout());
-        JLabel playerText = new JLabel("How many players will be playing (2 - 6) inclusive", SwingConstants.CENTER);
+        JLabel playerText = new JLabel("How many players will be playing?", SwingConstants.CENTER);
         playerText.setFont(new Font("Verdana", Font.BOLD, 20));
         JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 6, 2);
+        slider.setPreferredSize(new Dimension(500, 60));
         slider.addChangeListener(new SliderHandler());
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
@@ -91,10 +82,6 @@ public class Craps extends JFrame
         {
             nextScene();
             currentGame.populatePlayerList(numOfPlayers);
-            for (int i = 0; i < currentGame.getPlayerList().size(); ++i)
-            {
-                System.out.println("Player " + (i + 1) + " " + currentGame.getPlayerList().get(i).getName());
-            }
         });
 
         secondScene.add(playerText);
@@ -107,6 +94,20 @@ public class Craps extends JFrame
         scenes.add(firstScene);
         scenes.add(secondScene);
         scenes.add(thirdScene);
+    }
+
+    private void createNavBar()
+    {
+        aboutMenu = new JMenu("About");
+        instructionsMenu = new JMenu("Instructions");
+
+        navBar = new JMenuBar();
+
+        aboutMenu.addItemListener(new MenuListener());
+        instructionsMenu.addItemListener(new MenuListener());
+
+        navBar.add(instructionsMenu);
+        navBar.add(aboutMenu);
     }
 
     private void nextScene()
@@ -145,7 +146,8 @@ public class Craps extends JFrame
         public void itemStateChanged(ItemEvent e)
         {
 
-            System.out.println(e.getStateChange());
+            System.out.println("About is " + (aboutMenu.isSelected() ? "Selected" : "Diselected"));
+            System.out.println("instructions is " + (instructionsMenu.isSelected() ? "Selected" : "Diselected"));
             if (e.getStateChange() == ItemEvent.SELECTED)
             {
                 JMenu source = (JMenu) e.getSource();
