@@ -29,28 +29,25 @@ public class Craps extends JFrame
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
 
-        JMenu aboutMenu = new JMenu("About");
-        JMenu instructionsMenu = new JMenu("Instructions");
+        JButton aboutMenu = new JButton("About");
+        JButton instructionsMenu = new JButton("Instructions");
 
         slider.addChangeListener(new SliderHandler());
 
         navBar = new JMenuBar();
 
-        aboutMenu.addItemListener((ItemEvent event) ->
-        {
-            if (event.getStateChange() == ItemEvent.SELECTED)
-            {
-                JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        // aboutMenu.addItemListener((ItemEvent event) ->
+        // {
+        // if (event.getStateChange() == ItemEvent.SELECTED)
+        // {
+        // JOptionPane.showMessageDialog(null, "About", "About",
+        // JOptionPane.INFORMATION_MESSAGE);
+        // aboutMenu.setSelected(false);
+        // }
+        // });
 
-        instructionsMenu.addItemListener((ItemEvent event) ->
-        {
-            if (event.getStateChange() == ItemEvent.SELECTED)
-            {
-                JOptionPane.showMessageDialog(null, "Instructions", "Instructions", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        aboutMenu.addActionListener(new MenuButtonListener());
+        instructionsMenu.addActionListener(new MenuButtonListener());
 
         navBar.add(instructionsMenu);
         navBar.add(aboutMenu);
@@ -76,6 +73,23 @@ public class Craps extends JFrame
             if (!source.getValueIsAdjusting())
             {
                 numOfPlayers = (int) source.getValue();
+            }
+        }
+
+    }
+
+    private class MenuButtonListener implements ActionListener
+    {
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            if (e.getActionCommand().equals("About"))
+            {
+                JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.PLAIN_MESSAGE);
+            } else
+            {
+                JOptionPane.showMessageDialog(null, "Instructions", "Instructions", JOptionPane.PLAIN_MESSAGE);
             }
         }
 
