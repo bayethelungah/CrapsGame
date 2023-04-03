@@ -10,10 +10,11 @@ import java.util.ArrayList;
 public class Game
 {
     private int totalPotAmount;
-    private ArrayList<Player>playerList = new ArrayList<Player>();
+    private ArrayList<Player>playerList;
+    private ArrayList<Pass>
 
     public Game(){
-
+        
     }
 
     public ArrayList<Player> getPlayerList() {
