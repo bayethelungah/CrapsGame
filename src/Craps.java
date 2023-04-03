@@ -33,7 +33,6 @@ public class Craps extends JFrame
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
 
-        // slider creation inside constructor
         currentGame = new Game();
         createScenes();
         createNavBar();
