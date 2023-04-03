@@ -42,7 +42,14 @@ public class Craps extends JFrame
             {
                 JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.INFORMATION_MESSAGE);
             }
+        });
 
+        instructionsMenu.addItemListener((ItemEvent event) ->
+        {
+            if (event.getStateChange() == ItemEvent.SELECTED)
+            {
+                JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.INFORMATION_MESSAGE);
+            }
         });
 
         navBar.add(instructionsMenu);
