@@ -29,12 +29,12 @@ public class Craps extends JFrame
         slider.setMajorTickSpacing(1);
         slider.setPaintTicks(true);
 
+        JMenu aboutMenu = new JMenu("About");
+        JMenu instructionsMenu = new JMenu("Instructions");
+
         slider.addChangeListener(new SliderHandler());
 
         navBar = new JMenuBar();
-
-        JMenu instructionsMenu = new JMenu("Instructions");
-        JMenu aboutMenu = new JMenu("About");
 
         aboutMenu.addItemListener((ItemEvent event) ->
         {
