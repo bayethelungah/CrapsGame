@@ -36,16 +36,6 @@ public class Craps extends JFrame
 
         navBar = new JMenuBar();
 
-        // aboutMenu.addItemListener((ItemEvent event) ->
-        // {
-        // if (event.getStateChange() == ItemEvent.SELECTED)
-        // {
-        // JOptionPane.showMessageDialog(null, "About", "About",
-        // JOptionPane.INFORMATION_MESSAGE);
-        // aboutMenu.setSelected(false);
-        // }
-        // });
-
         aboutMenu.addActionListener(new MenuButtonListener());
         instructionsMenu.addActionListener(new MenuButtonListener());
 
