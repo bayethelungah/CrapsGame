@@ -10,24 +10,29 @@ import java.util.ArrayList;
 public class Game
 {
     private int totalPotAmount;
-    private ArrayList<Player>playerList;
-    private ArrayList<Pass>
+    private ArrayList<Player> playerList;
+    private ArrayList<Pass> pass;
 
-    public Game(){
-        
+    public Game()
+    {
+
     }
 
-    public ArrayList<Player> getPlayerList() {
+    public ArrayList<Player> getPlayerList()
+    {
         return playerList;
     }
-    public int getTotalPotAmount() {
+
+    public int getTotalPotAmount()
+    {
         return totalPotAmount;
     }
-    public void populatePlayerList(){
+
+    public void populatePlayerList()
+    {
 
     }
-    public boolean checForGameWinner(){
+
+    public boolean checkForGameWinner(){
         return true;
     }
-
-}
