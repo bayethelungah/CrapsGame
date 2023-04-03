@@ -11,7 +11,9 @@ import java.awt.event.*;
 
 public class Craps extends JFrame
 {
-    JMenuBar navBar;
+    private JMenuBar navBar;
+    private JOptionPane optionPane;
+    private int numOfPlayers;
 
     public Craps()
     {
@@ -20,9 +22,30 @@ public class Craps extends JFrame
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
 
+        // slider creation inside constructor
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 2, 6, 2);
+        slider.setMajorTickSpacing(1);
+
+        optionPane = new JOptionPane();
+        optionPane.setVisible(false);
+
         navBar = new JMenuBar();
 
-        navBar.setBackground(Color.BLACK);
+        JMenu instructionsMenu = new JMenu("Instructions");
+        JMenu aboutMenu = new JMenu("About");
+
+        aboutMenu.addItemListener((ItemEvent event) ->
+        {
+            if (event.getStateChange() == ItemEvent.SELECTED)
+            {
+                optionPane.setVisible(true);
+                optionPane.showMessageDialog(null, "About");
+            }
+
+        });
+
+        navBar.add(instructionsMenu);
+        navBar.add(aboutMenu);
 
         this.add(navBar, BorderLayout.NORTH);
         this.setVisible(true);
@@ -32,4 +55,5 @@ public class Craps extends JFrame
     {
         new Craps();
     }
+
 }
