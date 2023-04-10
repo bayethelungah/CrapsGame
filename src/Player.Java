@@ -1,6 +1,6 @@
 /*
  * Class name: Player
- * Purpose: represents a die that can be rolled
+ * Purpose: represents a entity that can play and place bets in a crap game
  * Coder: Bayethe Lungah and Keenan
  * Date: April 3, 2023 
  */
@@ -25,6 +25,11 @@ public class Player
     public String getName()
     {
         return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public int getBankBalance()

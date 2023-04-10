@@ -47,8 +47,10 @@ public class Craps extends JFrame
         // these constraints are reused;
         GridBagConstraints gbcOne = new GridBagConstraints();
         gbcOne.gridy = 1;
+        gbcOne.insets = new Insets(10, 0, 10, 0); // adding margin
         GridBagConstraints gbcTwo = new GridBagConstraints();
         gbcTwo.gridy = 2;
+        gbcTwo.insets = new Insets(10, 0, 10, 0);
 
         JPanel firstScene = new JPanel();
         firstScene.setLayout(new GridBagLayout());
@@ -77,6 +79,7 @@ public class Craps extends JFrame
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         JButton submitButton = new JButton("Submit");
+
         submitButton.addActionListener((ActionEvent e) ->
         {
             nextScene();
@@ -89,10 +92,43 @@ public class Craps extends JFrame
 
         JPanel thirdScene = new JPanel();
         thirdScene.setLayout(new GridBagLayout());
+        JLabel playerNameLabel = new JLabel("Enter the name of all the players on new lines", SwingConstants.CENTER);
+        playerNameLabel.setFont(new Font("Verdana", Font.BOLD, 20));
+        JButton playerNameSubmitButton = new JButton("Submit");
+        JTextArea playerNamesField = new JTextArea();
+        playerNamesField.setPreferredSize(new Dimension(200, 125));
+        playerNamesField.setFont(new Font("Verdana", Font.PLAIN, 15));
+
+        playerNameSubmitButton.addActionListener((ActionEvent event) ->
+        {
+            ArrayList<Player> players = currentGame.getPlayerList();
+            String[] names = playerNamesField.getText().split("\n");
+
+            if (names.length < players.size())
+            {
+                JOptionPane.showMessageDialog(null, "Too few names", "Error", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+
+            for (int i = 0; i < players.size(); ++i)
+            {
+                players.get(i).setName(names[i]);
+            }
+
+            nextScene();
+
+        });
+
+        thirdScene.add(playerNameLabel);
+        thirdScene.add(playerNamesField, gbcOne);
+        thirdScene.add(playerNameSubmitButton, gbcTwo);
+
+        JPanel fourthScene = new JPanel();
 
         scenes.add(firstScene);
         scenes.add(secondScene);
         scenes.add(thirdScene);
+        scenes.add(fourthScene);
     }
 
     private void createNavBar()
