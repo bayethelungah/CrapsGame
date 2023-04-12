@@ -22,6 +22,10 @@ public class Game
         return playerList;
     }
 
+    public void setTotalPotAmount(int numPlayers) {
+    	this.totalPotAmount = numPlayers * 100;
+    }
+    
     public int getTotalPotAmount()
     {
         return totalPotAmount;
