@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /*
  * Class name: Die
  * Purpose: represents a die that can be rolled
- * Coder: Bayethe Lungah and Keenan
+ * Coder: Bayethe and Keenan
  * Date: April 3, 2023 
  */
 
@@ -12,12 +12,19 @@ public class Game
     private int totalPotAmount;
     private ArrayList<Player> playerList;
     private int shooterIndex;
+    private boolean isOver;
 
     public Game()
     {
         totalPotAmount = 0;
         playerList = new ArrayList<Player>();
         shooterIndex = (int) (Math.random() * playerList.size());
+        isOver = false;
+    }
+
+    public boolean getIsOver()
+    {
+        return isOver;
     }
 
     public ArrayList<Player> getPlayerList()
@@ -49,11 +56,14 @@ public class Game
     {
         for (Player player : playerList)
         {
-            if (player.getBankBalance() == 0)
+            if (player.getBankBalance() <= 0)
             {
                 playerList.remove(player);
             }
         }
+
+        if (playerList.size() == 1)
+            isOver = true;
     }
 
     public void updateShooterIndex()

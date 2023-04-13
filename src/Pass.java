@@ -16,7 +16,6 @@ public class Pass
     private boolean shooterWin;
     private boolean firstRoll;
     private int shooterPoint;
-    private boolean isOver;
 
     public Pass(int shooterID, int actionAmount, int actionAmountCovered)
     {
@@ -26,18 +25,7 @@ public class Pass
         this.shooterWin = false;
         this.firstRoll = true;
         this.shooterPoint = 0;
-        this.isOver = false;
 
-    }
-
-    public boolean getIsOver()
-    {
-        return isOver;
-    }
-
-    public void setIsOver(boolean isOver)
-    {
-        this.isOver = isOver;
     }
 
     public int getShooterPoint()
@@ -103,13 +91,15 @@ public class Pass
     public void settleBets(boolean shooterWin, ArrayList<Player> playerList)
     {
         setShooterWinOrLose(shooterWin);
+        System.out.println("Shooter Won? " + shooterWin);
         for (Player player : playerList)
         {
             if (player.getIsShooter()) // this player is the shooter
             {
                 if (shooterWin)
                 {
-                    player.setBankBalance(player.getBankBalance() + actionAmountCovered);
+                    player.setBankBalance(player.getBankBalance() + actionAmount);
+                    System.out.println("Shooter Won And is receiving $" + actionAmount);
                 } else
                 {
                     player.setBankBalance(player.getBankBalance() - actionAmountCovered);
@@ -126,7 +116,6 @@ public class Pass
             }
         }
 
-        isOver = true;
     }
 
     public boolean shootOrPass()

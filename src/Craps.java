@@ -12,6 +12,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Craps extends JFrame
 {
@@ -58,7 +60,9 @@ public class Craps extends JFrame
         firstScene.setPreferredSize(new Dimension(50, 50));
 
         JLabel gameTitle = new JLabel("Craps", SwingConstants.CENTER);
-        gameTitle.setFont(new Font("Verdana", Font.BOLD, 40));
+        JLabel creatorsLabel = new JLabel("By Bayethe and Keenan", SwingConstants.CENTER);
+        gameTitle.setFont(new Font("Verdana", Font.BOLD, 60));
+        creatorsLabel.setFont(new Font("Verdana", Font.ITALIC, 20));
         JButton playButton = new JButton("Play");
         playButton.setPreferredSize(new Dimension(100, 30));
         playButton.addActionListener((ActionEvent e) ->
@@ -67,7 +71,8 @@ public class Craps extends JFrame
         });
 
         firstScene.add(gameTitle);
-        firstScene.add(playButton, gbcOne);
+        firstScene.add(creatorsLabel, gbcOne);
+        firstScene.add(playButton, gbcTwo);
 
         JPanel secondScene = new JPanel();
         secondScene.setLayout(new GridBagLayout());
@@ -167,19 +172,26 @@ public class Craps extends JFrame
         {
             playerLabels[i] = new JLabel("<html>Player #" + (i + 1) + "<br>" + "Name: " + players.get(i).getName()
                     + "<br>" + "Bank Balance: $" + players.get(i).getBankBalance() + "</html>", SwingConstants.CENTER);
+
             if (i == currentGame.getShooterIndex())
             {
                 playerLabels[i].setForeground(Color.RED);
+                betTexts[i] = new JTextField("10");
+            } else
+            {
+                betTexts[i] = new JTextField("0");
             }
             betLabels[i] = new JLabel("bet:", SwingConstants.CENTER);
 
-            betTexts[i] = new JTextField("0");
             fourthSceneTop.add(playerLabels[i]);
             fourthSceneMid.add(betLabels[i]);
             fourthSceneMid.add(betTexts[i]);
         }
 
-        JLabel instructionsLabel = new JLabel("Shooter, Please Enter a bet (Minimum $10)", SwingConstants.CENTER);
+        JLabel instructionsLabel = new JLabel(
+                "Shooter (" + currentGame.getPlayerList().get(currentGame.getShooterIndex()).getName()
+                        + "), Please Enter a bet (Minimum $10)",
+                SwingConstants.CENTER);
         instructionsLabel.setFont(new Font("Verdana", Font.BOLD, 20));
         fourthSceneInfo.add(instructionsLabel);
 
@@ -216,6 +228,7 @@ public class Craps extends JFrame
                     return;
                 }
 
+                System.out.println("Shooter Bet: " + bet);
                 currentGame.getPlayerList().get(currentGame.getShooterIndex()).setAmountBet(bet);
                 placeOpponentBets.setEnabled(true);
 
@@ -246,8 +259,9 @@ public class Craps extends JFrame
                         return;
                     }
 
-                    players.get(i).setAmountBet(bet);
+                    currentGame.getPlayerList().get(i).setAmountBet(bet);
                     actionAmountCovered += bet;
+                    System.out.println("Opponent Bet: " + bet);
 
                 } catch (NumberFormatException exc)
                 {
@@ -282,13 +296,17 @@ public class Craps extends JFrame
         gbc.gridy = 1;
 
         JLabel rollResultText = new JLabel("Roll Value: ", SwingConstants.CENTER);
-        rollResultText.setFont(new Font("Verdana", Font.BOLD, 20));
+        rollResultText.setFont(new Font("Verdana", Font.BOLD, 40));
+        JLabel rollStatus = new JLabel(" ");
+        rollStatus.setFont(new Font("Verdana", Font.BOLD, 30));
 
         Die die = new Die();
 
         JButton rollDice = new JButton("Roll Dice");
         fifthScene.add(rollResultText, gbc);
         gbc.gridy = 2;
+        fifthScene.add(rollStatus, gbc);
+        gbc.gridy = 3;
         fifthScene.add(rollDice, gbc);
 
         rollDice.addActionListener((ActionEvent event) ->
@@ -301,12 +319,12 @@ public class Craps extends JFrame
 
                 if (rollValue == 7 || rollValue == 11)
                 {
-                    endGame(true, currentGame.getPlayerList(), round, rollResultText);
+                    endGame(true, currentGame.getPlayerList(), round, rollStatus);
                 }
 
                 if (rollValue == 2 || rollValue == 3 || rollValue == 12)
                 {
-                    endGame(false, currentGame.getPlayerList(), round, rollResultText);
+                    endGame(false, currentGame.getPlayerList(), round, rollStatus);
                 }
 
                 round.setFirstRoll(false);
@@ -316,28 +334,14 @@ public class Craps extends JFrame
             {
                 if (rollValue == round.getShooterPoint())
                 {
-                    endGame(true, currentGame.getPlayerList(), round, rollResultText);
+                    endGame(true, currentGame.getPlayerList(), round, rollStatus);
                 }
 
                 if (rollValue == 7)
                 {
-                    endGame(false, currentGame.getPlayerList(), round, rollResultText);
+                    endGame(false, currentGame.getPlayerList(), round, rollStatus);
                 }
             }
-
-            if (round.getIsOver())
-            {
-                if (!round.shootOrPass())
-                {
-                    currentGame.updateShooterIndex();
-                }
-
-                rollResultText.setText("Roll Value: ");
-                deleteGameScenes();
-                buildFourthScene();
-                nextScene();
-            }
-
         });
 
         try
@@ -354,8 +358,29 @@ public class Craps extends JFrame
 
     private void endGame(boolean shooterWin, ArrayList<Player> players, Pass round, JLabel diceText)
     {
-        round.settleBets(false, currentGame.getPlayerList());
-        currentGame.updatePlayerList();
+        String finishingText = shooterWin ? " has Won The roll" : " has lost the roll";
+        diceText.setText(players.get(currentGame.getShooterIndex()).getName() + finishingText);
+
+        // delays asking the user if they want to shoot again.
+        new Timer().schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                round.settleBets(shooterWin, currentGame.getPlayerList());
+                currentGame.updatePlayerList();
+
+                if (!round.shootOrPass())
+                {
+                    currentGame.updateShooterIndex();
+                }
+
+                deleteGameScenes();
+                buildFourthScene();
+                nextScene();
+            }
+        }, 1200l);
+        ;
     }
 
     private void createNavBar()
@@ -379,7 +404,6 @@ public class Craps extends JFrame
         ++sceneIndex;
         if (sceneIndex >= scenes.size())
         {
-            System.out.println("Scene: " + sceneIndex + " Size: " + scenes.size());
             sceneIndex = GAME_BEGINNING_SCENE;
         }
         this.add(scenes.get(sceneIndex));
