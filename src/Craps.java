@@ -21,7 +21,6 @@ public class Craps extends JFrame
     private int numOfPlayers;
     private JMenu aboutMenu, instructionsMenu;
     private Game currentGame;
-    private ArrayList<Player> players;
 
     private ArrayList<JPanel> scenes = new ArrayList<JPanel>();
     private int sceneIndex = 0;
@@ -111,7 +110,7 @@ public class Craps extends JFrame
 
         playerNameNexButton.addActionListener((ActionEvent event) ->
         {
-            players = currentGame.getPlayerList();
+            ArrayList<Player> players = currentGame.getPlayerList();
             String[] names = playerNamesField.getText().split("\n");
 
             if (names.length < players.size())
@@ -158,126 +157,75 @@ public class Craps extends JFrame
         JPanel fourthSceneTop = new JPanel();
         JPanel fourthSceneInfo = new JPanel();
         JPanel fourthSceneMid = new JPanel();
+        JPanel fourthSceneButtonArea = new JPanel();
         JPanel fourthSceneBot = new JPanel();
-        fourthScene.setLayout(new GridBagLayout());
-        fourthSceneTop.setLayout(new GridLayout(1, currentGame.getPlayerList().size(), 15, 5));
-        fourthSceneInfo.setLayout(new GridLayout(2, 1));
-        fourthSceneMid.setLayout(new GridLayout(1, currentGame.getPlayerList().size()));
-        fourthSceneBot.setLayout(new FlowLayout());
-        JLabel[] playerLabels = new JLabel[currentGame.getPlayerList().size()];
-        JLabel[] betLabels = new JLabel[currentGame.getPlayerList().size()];
-        JTextField[] betTexts = new JTextField[currentGame.getPlayerList().size()];
 
-        for (int i = 0; i < currentGame.getPlayerList().size(); i++)
+        ArrayList<Player> players = currentGame.getPlayerList();
+        fourthScene.setLayout(new GridBagLayout());
+        fourthSceneTop.setLayout(new GridLayout(1, players.size(), 15, 5));
+        fourthSceneInfo.setLayout(new GridLayout(2, 1));
+        fourthSceneMid.setLayout(new GridLayout(1, players.size()));
+        fourthSceneButtonArea.setLayout(new GridLayout(1, players.size()));
+        fourthSceneBot.setLayout(new GridLayout(1, players.size()));
+
+        JLabel[] playerLabels = new JLabel[players.size()];
+        JLabel[] betLabels = new JLabel[players.size()];
+        JTextField[] betTexts = new JTextField[players.size()];
+        JButton[] betButtons = new JButton[players.size()];
+
+        for (int i = 0; i < players.size(); i++)
         {
             playerLabels[i] = new JLabel("<html>Player #" + (i + 1) + "<br>" + "Name: " + players.get(i).getName()
                     + "<br>" + "Bank Balance: $" + players.get(i).getBankBalance() + "</html>", SwingConstants.CENTER);
+
+            betLabels[i] = new JLabel("bet:  $", SwingConstants.CENTER);
+            betButtons[i] = new JButton("Confirm");
+            betButtons[i].addActionListener(new BetButtonListener());
 
             if (i == currentGame.getShooterIndex())
             {
                 playerLabels[i].setForeground(Color.RED);
                 betTexts[i] = new JTextField("10");
+                BetButtonListener.currentPlayerIndex = i;
             } else
             {
                 betTexts[i] = new JTextField("0");
+                betTexts[i].setEnabled(false);
+                betButtons[i].setEnabled(false);
             }
-            betLabels[i] = new JLabel("bet:", SwingConstants.CENTER);
+
+            betTexts[i].addActionListener(new BetFieldListener(betButtons[i]));
+            JPanel betInfo = new JPanel();
+            betInfo.setLayout(new GridBagLayout());
+            GridBagConstraints betConstraints = new GridBagConstraints();
+            betInfo.add(betLabels[i], betConstraints);
+            betConstraints.gridx = 1;
+            betConstraints.fill = GridBagConstraints.HORIZONTAL;
+            betInfo.add(betTexts[i], betConstraints);
+            betConstraints.gridy = 1;
+            betInfo.add(betButtons[i], betConstraints);
 
             fourthSceneTop.add(playerLabels[i]);
-            fourthSceneMid.add(betLabels[i]);
-            fourthSceneMid.add(betTexts[i]);
+            fourthSceneMid.add(betInfo);
         }
 
-        JLabel instructionsLabel = new JLabel(
-                "Shooter (" + currentGame.getPlayerList().get(currentGame.getShooterIndex()).getName()
-                        + "), Please Enter a bet (Minimum $10)",
-                SwingConstants.CENTER);
+        JLabel instructionsLabel = new JLabel("Shooter (" + players.get(currentGame.getShooterIndex()).getName()
+                + "), Please Enter a bet (Minimum $10)", SwingConstants.CENTER);
         instructionsLabel.setFont(new Font("Verdana", Font.BOLD, 20));
         fourthSceneInfo.add(instructionsLabel);
 
-        JButton placeShooterBets = new JButton("Confirm Shooter Bet");
-        JButton placeOpponentBets = new JButton("Confirm Opposing Bets");
-        placeOpponentBets.setEnabled(false);
-        fourthSceneBot.add(placeShooterBets);
-        fourthSceneBot.add(placeOpponentBets);
+        BetButtonListener.buttons = betButtons;
+        BetButtonListener.fields = betTexts;
+        BetButtonListener.instructions = instructionsLabel;
+        BetButtonListener.players = players;
 
         fourthScene.add(fourthSceneInfo, gbc);
         gbc.anchor = GridBagConstraints.CENTER;
         fourthScene.add(fourthSceneTop, gbc);
         fourthScene.add(fourthSceneMid, gbc);
+        fourthScene.add(fourthSceneButtonArea, gbc);
         gbc.anchor = GridBagConstraints.SOUTH;
         fourthScene.add(fourthSceneBot, gbc);
-
-        placeShooterBets.addActionListener((ActionEvent event) ->
-        {
-            try
-            {
-                int bet = Integer.parseInt(betTexts[currentGame.getShooterIndex()].getText());
-
-                if (bet > currentGame.getPlayerList().get(currentGame.getShooterIndex()).getBankBalance())
-                {
-                    JOptionPane.showMessageDialog(null, "The Amount Betted Exceeds The shooters Bank balance", "Error",
-                            JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-
-                if (bet % 10 != 0) // checking if bet is multiple of 10
-                {
-                    JOptionPane.showMessageDialog(null, "Please Enter a Natural number that is a Multiple of 10",
-                            "Error", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-
-                System.out.println("Shooter Bet: " + bet);
-                currentGame.getPlayerList().get(currentGame.getShooterIndex()).setAmountBet(bet);
-                placeOpponentBets.setEnabled(true);
-
-                instructionsLabel.setText("Opponents can place their bets on the pool of: $"
-                        + players.get(currentGame.getShooterIndex()).getAmountBet());
-
-            } catch (NumberFormatException exc)
-            {
-                JOptionPane.showMessageDialog(null, "Please Enter a Natural number that is a Multiple of 10", "Error",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-        });
-
-        placeOpponentBets.addActionListener((ActionEvent event) ->
-        {
-            int actionAmountCovered = 0;
-            for (int i = 0; i < betTexts.length; ++i)
-            {
-                if (currentGame.getShooterIndex() == i)
-                    continue;
-                try
-                {
-                    int bet = Integer.parseInt(betTexts[i].getText());
-
-                    if (bet > players.get(currentGame.getShooterIndex()).getAmountBet())
-                    {
-                        JOptionPane.showMessageDialog(null, players.get(i).getName() + "'s bet is too large");
-                        return;
-                    }
-
-                    currentGame.getPlayerList().get(i).setAmountBet(bet);
-                    actionAmountCovered += bet;
-                    System.out.println("Opponent Bet: " + bet);
-
-                } catch (NumberFormatException exc)
-                {
-                    JOptionPane.showMessageDialog(null, players.get(i).getName() + "'s bet is not a natural number");
-                    return;
-                }
-
-            }
-
-            bulidFifthScene(new Pass(currentGame.getShooterIndex(),
-                    currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
-                    actionAmountCovered));
-            nextScene();
-            // Collections.swap(scenes, 3, 4);
-
-        });
 
         scenes.add(3, fourthScene);
     }
@@ -380,7 +328,6 @@ public class Craps extends JFrame
                 nextScene();
             }
         }, 1200l);
-        ;
     }
 
     private void createNavBar()
@@ -450,5 +397,132 @@ public class Craps extends JFrame
 
             }
         }
+
     }
+
+    private class BetButtonListener implements ActionListener
+    {
+        private static JButton[] buttons;
+        private static JTextField[] fields;
+        private static int actionAmountCovered = 0;
+        private static int currentPlayerIndex;
+        private static JLabel instructions;
+        private static ArrayList<Player> players;
+
+        private static int nextPlayerIndex()
+        {
+            return (currentPlayerIndex + 1) % players.size();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            System.out.println("Clicked Button");
+
+            try
+            {
+                int bet = Integer.parseInt(fields[currentPlayerIndex].getText());
+
+                boolean isShooter = players.get(currentPlayerIndex).getIsShooter();
+
+                if (bet % 10 != 0)
+                {
+                    JOptionPane.showMessageDialog(null, "Please Enter a natural number that is a multiple of 10");
+                    return;
+                }
+
+                if (!isShooter && bet > actionAmountCovered)
+                {
+                    JOptionPane.showMessageDialog(null, "You cannot place a bet that is larger then the pool");
+                    return;
+                }
+
+                if (bet > players.get(currentPlayerIndex).getBankBalance())
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "You cannot place a bet that is greater then your bank account");
+                    return;
+                }
+
+                players.get(currentPlayerIndex).setAmountBet(bet);
+                boolean lastBet = players.get(nextPlayerIndex()).getIsShooter();
+
+                if (isShooter)
+                {
+                    actionAmountCovered = bet;
+                } else
+                {
+                    actionAmountCovered -= bet;
+
+                }
+
+                if (!lastBet)
+                {
+
+                    buttons[currentPlayerIndex].setEnabled(false);
+                    fields[currentPlayerIndex].setEnabled(false);
+
+                    if (actionAmountCovered > 0)
+                    {
+                        instructions.setText(players.get(nextPlayerIndex()).getName() + " please make a bet (Maximum $"
+                                + actionAmountCovered + ")");
+
+                        buttons[nextPlayerIndex()].setEnabled(true);
+                        fields[nextPlayerIndex()].setEnabled(true);
+                    } else
+                    {
+                        instructions.setText("No More Bets");
+
+                        new Timer().schedule(new TimerTask()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                bulidFifthScene(new Pass(currentGame.getShooterIndex(),
+                                        currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
+                                        actionAmountCovered));
+                                nextScene();
+                            }
+                        }, 1200l);
+
+                    }
+
+                } else
+                {
+                    bulidFifthScene(new Pass(currentGame.getShooterIndex(),
+                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
+                            actionAmountCovered));
+                    nextScene();
+                }
+
+                currentPlayerIndex = nextPlayerIndex();
+            } catch (NumberFormatException exc)
+            {
+                JOptionPane.showMessageDialog(null,
+                        players.get(currentPlayerIndex).getName() + "'s bet is not a natural number");
+                return;
+            }
+
+        }
+
+    }
+
+    private class BetFieldListener implements ActionListener
+    {
+        public JButton button;
+
+        public BetFieldListener(JButton button)
+        {
+            this.button = button;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+
+            button.doClick();
+        }
+
+    }
+
 }

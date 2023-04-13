@@ -121,7 +121,7 @@ public class Pass
     public boolean shootOrPass()
     {
 
-        int selected = JOptionPane.showConfirmDialog(null, "Would you like to shoot Again");
+        int selected = JOptionPane.showConfirmDialog(null, "would you like to shoot again?");
         return selected == JOptionPane.YES_OPTION;
 
     }
