@@ -12,7 +12,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Craps extends JFrame
 {
@@ -269,7 +268,7 @@ public class Craps extends JFrame
         scenes.add(3, fourthScene);
     }
 
-    private void deleteFourthScene()
+    private void deleteGameScenes()
     {
         JPanel scene = scenes.get(3);
         scenes.remove(scene);
@@ -334,15 +333,23 @@ public class Craps extends JFrame
                 }
 
                 rollResultText.setText("Roll Value: ");
-                deleteFourthScene();
+                deleteGameScenes();
                 buildFourthScene();
                 nextScene();
             }
 
         });
 
-        scenes.add(fifthScene);
+        try
+        {
+            JPanel previousFifthScene = scenes.get(4);
+            scenes.remove(previousFifthScene);
+        } catch (IndexOutOfBoundsException exc)
+        {
 
+        }
+
+        scenes.add(4, fifthScene);
     }
 
     private void endGame(boolean shooterWin, ArrayList<Player> players, Pass round, JLabel diceText)

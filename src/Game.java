@@ -41,6 +41,8 @@ public class Game
         {
             playerList.add(new Player(""));
         }
+
+        playerList.get(shooterIndex).setIsShooter(true);
     }
 
     public void updatePlayerList()
@@ -56,7 +58,9 @@ public class Game
 
     public void updateShooterIndex()
     {
+        playerList.get(shooterIndex).setIsShooter(false);
         shooterIndex = ++shooterIndex % playerList.size();
+        playerList.get(shooterIndex).setIsShooter(true);
     }
 
     public int getShooterIndex()
