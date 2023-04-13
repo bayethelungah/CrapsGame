@@ -6,6 +6,7 @@
  */
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class Pass
 {
@@ -13,6 +14,9 @@ public class Pass
     private int actionAmount;
     private int actionAmountCovered;
     private boolean shooterWin;
+    private boolean firstRoll;
+    private int shooterPoint;
+    private boolean isOver;
 
     public Pass(int shooterID, int actionAmount, int actionAmountCovered)
     {
@@ -20,6 +24,40 @@ public class Pass
         this.actionAmount = actionAmount;
         this.actionAmountCovered = actionAmountCovered;
         this.shooterWin = false;
+        this.firstRoll = true;
+        this.shooterPoint = 0;
+        this.isOver = false;
+
+    }
+
+    public boolean getIsOver()
+    {
+        return isOver;
+    }
+
+    public void setIsOver(boolean isOver)
+    {
+        this.isOver = isOver;
+    }
+
+    public int getShooterPoint()
+    {
+        return shooterPoint;
+    }
+
+    public void setShooterPoint(int shooterPoint)
+    {
+        this.shooterPoint = shooterPoint;
+    }
+
+    public void setFirstRoll(boolean firstRoll)
+    {
+        this.firstRoll = firstRoll;
+    }
+
+    public boolean getFirstRoll()
+    {
+        return firstRoll;
     }
 
     public int getShooterID()
@@ -64,6 +102,7 @@ public class Pass
 
     public void settleBets(boolean shooterWin, ArrayList<Player> playerList)
     {
+        setShooterWinOrLose(shooterWin);
         for (Player player : playerList)
         {
             if (player.getIsShooter()) // this player is the shooter
@@ -86,11 +125,16 @@ public class Pass
                 }
             }
         }
+
+        isOver = true;
     }
 
     public boolean shootOrPass()
     {
-        return true;
+
+        int selected = JOptionPane.showConfirmDialog(null, "Would you like to shoot Again");
+        return selected == JOptionPane.YES_OPTION;
+
     }
 
 }

@@ -21,7 +21,7 @@ public class Die
 
     public int rollDie()
     {
-        rollValue = (int) Math.random() * 7 + 1;
+        rollValue = (int) (Math.random() * 7 + 1);
         return rollValue;
     }
 }

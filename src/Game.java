@@ -10,11 +10,14 @@ import java.util.ArrayList;
 public class Game
 {
     private int totalPotAmount;
-    private ArrayList<Player>playerList;
+    private ArrayList<Player> playerList;
+    private int shooterIndex;
 
-    public Game() {
+    public Game()
+    {
         totalPotAmount = 0;
         playerList = new ArrayList<Player>();
+        shooterIndex = (int) (Math.random() * playerList.size());
     }
 
     public ArrayList<Player> getPlayerList()
@@ -22,10 +25,11 @@ public class Game
         return playerList;
     }
 
-    public void setTotalPotAmount(int numPlayers) {
-    	this.totalPotAmount = numPlayers * 100;
+    public void setTotalPotAmount(int numPlayers)
+    {
+        this.totalPotAmount = numPlayers * 100;
     }
-    
+
     public int getTotalPotAmount()
     {
         return totalPotAmount;
@@ -33,14 +37,39 @@ public class Game
 
     public void populatePlayerList(int numPlayers)
     {
-        for (int i = 0; i < numPlayers; i++){
+        for (int i = 0; i < numPlayers; i++)
+        {
             playerList.add(new Player(""));
         }
     }
 
-    public boolean checkForGameWinner(ArrayList<Player>list){
-        for(int i = 0; i < list.size(); i++){
-            if(list.get(i).getBankBalance() == totalPotAmount){
+    public void updatePlayerList()
+    {
+        for (Player player : playerList)
+        {
+            if (player.getBankBalance() == 0)
+            {
+                playerList.remove(player);
+            }
+        }
+    }
+
+    public void updateShooterIndex()
+    {
+        shooterIndex = ++shooterIndex % playerList.size();
+    }
+
+    public int getShooterIndex()
+    {
+        return shooterIndex;
+    }
+
+    public boolean checkForGameWinner(ArrayList<Player> list)
+    {
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (list.get(i).getBankBalance() == totalPotAmount)
+            {
                 return true;
             }
         }
