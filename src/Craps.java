@@ -321,12 +321,15 @@ public class Craps extends JFrame
             public void run()
             {
                 round.settleBets(shooterWin, currentGame.getPlayerList());
-                currentGame.updatePlayerList();
-
-                if (!round.shootOrPass())
-                {
-                    currentGame.updateShooterIndex();
+                boolean shooterRemoved = currentGame.updatePlayerList();
+                if(currentGame.getIsOver()){
+                    buildFinalScene();
+                    nextScene();
+                    return;
                 }
+                boolean shootingAgain = round.shootOrPass(shooterRemoved);
+                currentGame.updateShooterIndex(shooterRemoved, shootingAgain);
+                
 
                 deleteGameScenes();
                 buildFourthScene();
@@ -347,6 +350,19 @@ public class Craps extends JFrame
 
         navBar.add(instructionsMenu);
         navBar.add(aboutMenu);
+    }
+
+    private void buildFinalScene(){
+        JPanel gameOver = new JPanel(new GridLayout(2,1));
+        JLabel gameOverLabel = new JLabel("GAME OVER!", SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Verdana", Font.BOLD, 40));
+        JLabel playerWinner = new JLabel("Congrats " + currentGame.getPlayerList().get(0).getName() + ", YOU WIN!", SwingConstants.CENTER);
+        playerWinner.setFont(new Font("Verdana", Font.BOLD, 40));
+
+        gameOver.add(gameOverLabel);
+        gameOver.add(playerWinner);
+
+        scenes.add(gameOver);
     }
 
     private void nextScene()
@@ -409,7 +425,7 @@ public class Craps extends JFrame
     {
         private static JButton[] buttons;
         private static JTextField[] fields;
-        private static int actionAmountCovered = 0;
+        private static int betPool = 0;
         private static int currentPlayerIndex;
         private static JLabel instructions;
         private static ArrayList<Player> players;
@@ -441,7 +457,8 @@ public class Craps extends JFrame
                     return;
                 }
 
-                if (!isShooter && bet > actionAmountCovered)
+                System.out.println(isShooter);
+                if (!isShooter && bet > betPool)
                 {
                     JOptionPane.showMessageDialog(null, "You cannot place a bet that is larger then the pool");
                     return;
@@ -459,11 +476,10 @@ public class Craps extends JFrame
 
                 if (isShooter)
                 {
-                    actionAmountCovered = bet;
+                    betPool = bet; //60 - 60
                 } else
                 {
-                    actionAmountCovered -= bet;
-
+                    betPool -= bet; 
                 }
 
                 if (!lastBet)
@@ -472,10 +488,10 @@ public class Craps extends JFrame
                     buttons[currentPlayerIndex].setEnabled(false);
                     fields[currentPlayerIndex].setEnabled(false);
 
-                    if (actionAmountCovered > 0)
+                    if (betPool > 0)
                     {
                         instructions.setText(players.get(nextPlayerIndex()).getName() + " please make a bet (Maximum $"
-                                + actionAmountCovered + ")");
+                                + betPool + ")");
 
                         buttons[nextPlayerIndex()].setEnabled(true);
                         fields[nextPlayerIndex()].setEnabled(true);
@@ -490,7 +506,7 @@ public class Craps extends JFrame
                             {
                                 bulidFifthScene(new Pass(currentGame.getShooterIndex(),
                                         currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
-                                        actionAmountCovered));
+                                        currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet()));
                                 nextScene();
                             }
                         }, 1200l);
@@ -500,8 +516,8 @@ public class Craps extends JFrame
                 } else
                 {
                     bulidFifthScene(new Pass(currentGame.getShooterIndex(),
-                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet()-actionAmountCovered,
-                            actionAmountCovered));
+                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
+                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet() - betPool));
                     nextScene();
                 }
 

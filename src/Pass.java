@@ -98,11 +98,12 @@ public class Pass
             {
                 if (shooterWin)
                 {
-                    player.setBankBalance(player.getBankBalance() + actionAmount);
-                    System.out.println("Shooter Won And is receiving $" + actionAmount);
+                    player.setBankBalance(player.getBankBalance() + actionAmountCovered);
+                    System.out.println("Shooter Won And is receiving $" + actionAmountCovered);
                 } else
                 {
-                    player.setBankBalance(player.getBankBalance() - actionAmount);
+                    player.setBankBalance(player.getBankBalance() - actionAmountCovered);
+                    System.out.println("Shooter lost And is receiving $" + actionAmountCovered);
                 }
             } else // this player is an opponent
             {
@@ -118,15 +119,22 @@ public class Pass
 
     }
 
-    public boolean shootOrPass()
+    public boolean shootOrPass(boolean shooterRemoved)
     {
-
-        int selected = JOptionPane.showConfirmDialog(null, "would you like to shoot again?", null, JOptionPane.YES_NO_OPTION);
-        if(selected == JOptionPane.CANCEL_OPTION){
-            return false;
+        try {
+            if(shooterRemoved){
+                return false;
+            }
+            int selected = JOptionPane.showConfirmDialog(null, "would you like to shoot again?", null, JOptionPane.YES_NO_OPTION);
+            if(selected == JOptionPane.CLOSED_OPTION){
+                return false;
+            }
+            return selected == JOptionPane.YES_OPTION;
+    
+        } catch (Exception e) {
+            System.out.println("Exception thrown");
         }
-        return selected == JOptionPane.YES_OPTION;
-
+        return false;
     }
 
 }

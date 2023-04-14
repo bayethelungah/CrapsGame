@@ -53,12 +53,15 @@ public class Game
         playerList.get(shooterIndex).setIsShooter(true);
     }
 
-    public void updatePlayerList()
+    public boolean updatePlayerList()
     {
-
+        boolean shooterDeleted = false;
         for (Iterator<Player> itr = playerList.iterator(); itr.hasNext(); ) {
             Player p = itr.next();
             if (p.getBankBalance() <= 0) {
+                if(p.getIsShooter()){
+                    shooterDeleted = true;
+                }
                 itr.remove();
             }
         }
@@ -73,16 +76,32 @@ public class Game
 
         if (playerList.size() == 1)
             isOver = true;
+        return shooterDeleted;
     }
 
-    public void updateShooterIndex()
+    public void updateShooterIndex(boolean shooterRemoved, boolean shootingAgain)
     {
+        
         try {
             playerList.get(shooterIndex).setIsShooter(false);
         } catch (IndexOutOfBoundsException e) {
             System.out.println("player was removed. cannot access index of removed player");
         }
-        shooterIndex = ++shooterIndex % playerList.size();
+        if(!shooterRemoved){
+            if(shootingAgain){
+                shooterIndex = shooterIndex % playerList.size();
+                System.out.println("indx = " + shooterIndex + " list size =" + playerList.size());
+            }
+            else{
+                shooterIndex = ++shooterIndex % playerList.size();
+                System.out.println("indx = " + shooterIndex + " list size =" + playerList.size());
+            }
+            
+        }
+        else{
+            shooterIndex = shooterIndex % playerList.size();
+            System.out.println("indx = " + shooterIndex + " list size =" + playerList.size());
+        }
         playerList.get(shooterIndex).setIsShooter(true);
     }
 
