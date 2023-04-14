@@ -103,12 +103,12 @@ public class Craps extends JFrame
         thirdScene.setLayout(new GridBagLayout());
         JLabel playerNameLabel = new JLabel("Enter the name of all the players on new lines", SwingConstants.CENTER);
         playerNameLabel.setFont(new Font("Verdana", Font.BOLD, 20));
-        JButton playerNameNexButton = new JButton("Next");
+        JButton playerNameNextButton = new JButton("Next");
         JTextArea playerNamesField = new JTextArea();
         playerNamesField.setPreferredSize(new Dimension(200, 125));
         playerNamesField.setFont(new Font("Verdana", Font.PLAIN, 15));
 
-        playerNameNexButton.addActionListener((ActionEvent event) ->
+        playerNameNextButton.addActionListener((ActionEvent event) ->
         {
             ArrayList<Player> players = currentGame.getPlayerList();
             String[] names = playerNamesField.getText().split("\n");
@@ -135,7 +135,7 @@ public class Craps extends JFrame
 
         thirdScene.add(playerNameLabel);
         thirdScene.add(playerNamesField, gbcOne);
-        thirdScene.add(playerNameNexButton, gbcTwo);
+        thirdScene.add(playerNameNextButton, gbcTwo);
 
         scenes.add(firstScene);
         scenes.add(secondScene);
@@ -268,11 +268,13 @@ public class Craps extends JFrame
                 if (rollValue == 7 || rollValue == 11)
                 {
                     endGame(true, currentGame.getPlayerList(), round, rollStatus);
+                    rollDice.setEnabled(false);
                 }
 
                 if (rollValue == 2 || rollValue == 3 || rollValue == 12)
                 {
                     endGame(false, currentGame.getPlayerList(), round, rollStatus);
+                    rollDice.setEnabled(false);
                 }
 
                 round.setFirstRoll(false);
@@ -283,15 +285,18 @@ public class Craps extends JFrame
                 if (rollValue == round.getShooterPoint())
                 {
                     endGame(true, currentGame.getPlayerList(), round, rollStatus);
+                    rollDice.setEnabled(false);
                 }
 
                 if (rollValue == 7)
                 {
                     endGame(false, currentGame.getPlayerList(), round, rollStatus);
+                    rollDice.setEnabled(false);
                 }
             }
         });
 
+        
         try
         {
             JPanel previousFifthScene = scenes.get(4);
@@ -308,7 +313,7 @@ public class Craps extends JFrame
     {
         String finishingText = shooterWin ? " has Won The roll" : " has lost the roll";
         diceText.setText(players.get(currentGame.getShooterIndex()).getName() + finishingText);
-
+        
         // delays asking the user if they want to shoot again.
         new Timer().schedule(new TimerTask()
         {
@@ -430,6 +435,11 @@ public class Craps extends JFrame
                     JOptionPane.showMessageDialog(null, "Please Enter a natural number that is a multiple of 10");
                     return;
                 }
+                if (bet < 10)
+                {
+                    JOptionPane.showMessageDialog(null, "You must bet at minimum of $10");
+                    return;
+                }
 
                 if (!isShooter && bet > actionAmountCovered)
                 {
@@ -490,7 +500,7 @@ public class Craps extends JFrame
                 } else
                 {
                     bulidFifthScene(new Pass(currentGame.getShooterIndex(),
-                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet(),
+                            currentGame.getPlayerList().get(currentGame.getShooterIndex()).getAmountBet()-actionAmountCovered,
                             actionAmountCovered));
                     nextScene();
                 }

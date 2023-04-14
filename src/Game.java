@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /*
  * Class name: Die
@@ -18,7 +19,7 @@ public class Game
     {
         totalPotAmount = 0;
         playerList = new ArrayList<Player>();
-        shooterIndex = (int) (Math.random() * playerList.size());
+        //shooterIndex = (int) (Math.random() * playerList.size()); //note player list isnt initialized yet so moving this
         isOver = false;
     }
 
@@ -48,19 +49,27 @@ public class Game
         {
             playerList.add(new Player(""));
         }
-
+        shooterIndex = (int) (Math.random() * playerList.size());
         playerList.get(shooterIndex).setIsShooter(true);
     }
 
     public void updatePlayerList()
     {
-        for (Player player : playerList)
-        {
-            if (player.getBankBalance() <= 0)
-            {
-                playerList.remove(player);
+
+        for (Iterator<Player> itr = playerList.iterator(); itr.hasNext(); ) {
+            Player p = itr.next();
+            if (p.getBankBalance() <= 0) {
+                itr.remove();
             }
         }
+        //had to use iterator because you cant remove things from a list that you are looping through
+        // for (Player player : playerList)
+        // {
+        //     if (player.getBankBalance() <= 0)
+        //     {
+        //         playerList.remove(player);
+        //     }
+        // }
 
         if (playerList.size() == 1)
             isOver = true;
@@ -68,7 +77,11 @@ public class Game
 
     public void updateShooterIndex()
     {
-        playerList.get(shooterIndex).setIsShooter(false);
+        try {
+            playerList.get(shooterIndex).setIsShooter(false);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("player was removed. cannot access index of removed player");
+        }
         shooterIndex = ++shooterIndex % playerList.size();
         playerList.get(shooterIndex).setIsShooter(true);
     }

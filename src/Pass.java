@@ -102,7 +102,7 @@ public class Pass
                     System.out.println("Shooter Won And is receiving $" + actionAmount);
                 } else
                 {
-                    player.setBankBalance(player.getBankBalance() - actionAmountCovered);
+                    player.setBankBalance(player.getBankBalance() - actionAmount);
                 }
             } else // this player is an opponent
             {
@@ -121,7 +121,10 @@ public class Pass
     public boolean shootOrPass()
     {
 
-        int selected = JOptionPane.showConfirmDialog(null, "would you like to shoot again?");
+        int selected = JOptionPane.showConfirmDialog(null, "would you like to shoot again?", null, JOptionPane.YES_NO_OPTION);
+        if(selected == JOptionPane.CANCEL_OPTION){
+            return false;
+        }
         return selected == JOptionPane.YES_OPTION;
 
     }
