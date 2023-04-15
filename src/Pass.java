@@ -94,33 +94,38 @@ public class Pass
         System.out.println("Shooter Won? " + shooterWin);
         for (Player player : playerList)
         {
+            System.out.println("player: " + player.getName() + " is shooter?: " +player.getIsShooter());
             if (player.getIsShooter()) // this player is the shooter
             {
                 if (shooterWin)
                 {
                     player.setBankBalance(player.getBankBalance() + actionAmountCovered);
-                    System.out.println("Shooter Won And is receiving $" + actionAmountCovered);
+                    System.out.println("Shooter " + player.getName() + " won And is recieving $" + actionAmountCovered);
                 } else
                 {
                     player.setBankBalance(player.getBankBalance() - actionAmountCovered);
-                    System.out.println("Shooter lost And is receiving $" + actionAmountCovered);
+                    System.out.println("Shooter " + player.getName() + " lost And is losing $" + actionAmountCovered);
                 }
             } else // this player is an opponent
             {
                 if (shooterWin)
                 {
                     player.setBankBalance(player.getBankBalance() - player.getAmountBet());
+                    System.out.println("opposing player " + player.getName() + " lost and is losing $" + player.getAmountBet());
                 } else
                 {
                     player.setBankBalance(player.getBankBalance() + player.getAmountBet());
+                    System.out.println("opposing player " + player.getName() + " won and is winning $" + player.getAmountBet());
                 }
             }
+            player.setAmountBet(0);
         }
 
     }
 
     public boolean shootOrPass(boolean shooterRemoved)
     {
+        System.out.println(shooterRemoved);
         try {
             if(shooterRemoved){
                 return false;

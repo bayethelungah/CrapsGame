@@ -271,15 +271,18 @@ public class Craps extends JFrame
                     rollDice.setEnabled(false);
                 }
 
-                if (rollValue == 2 || rollValue == 3 || rollValue == 12)
+                else if (rollValue == 2 || rollValue == 3 || rollValue == 12)
                 {
                     endGame(false, currentGame.getPlayerList(), round, rollStatus);
                     rollDice.setEnabled(false);
                 }
 
+
                 round.setFirstRoll(false);
                 round.setShooterPoint(rollValue);
-
+                JLabel shooterPointLabel = new JLabel("Shooter Point: " + round.getShooterPoint(), SwingConstants.CENTER);
+                rollStatus.setFont(new Font("Verdana", Font.BOLD, 20));
+                fifthScene.add(shooterPointLabel);
             } else
             {
                 if (rollValue == round.getShooterPoint())
@@ -367,15 +370,14 @@ public class Craps extends JFrame
 
     private void nextScene()
     {
-
-        this.remove(scenes.get(sceneIndex));
+        scenes.get(sceneIndex).setVisible(false);
         ++sceneIndex;
         if (sceneIndex >= scenes.size())
         {
             sceneIndex = GAME_BEGINNING_SCENE;
         }
         this.add(scenes.get(sceneIndex));
-        SwingUtilities.updateComponentTreeUI(this);
+        scenes.get(sceneIndex).setVisible(true);
     }
 
     public static void main(String[] args)
@@ -410,10 +412,12 @@ public class Craps extends JFrame
                 JMenu source = (JMenu) e.getSource();
                 if (source.equals(aboutMenu))
                 {
-                    JOptionPane.showMessageDialog(null, "About", "About", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Coded By:\nBayethe Lungah\nKeenan Higgins", "About", JOptionPane.PLAIN_MESSAGE);
                 } else
                 {
-                    JOptionPane.showMessageDialog(null, "Instructions", "Instructions", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "(1) The shooter (randomly designated) makes a bet. The other players can bet against their bet.\n(2) The shooter rolls two dice. If the sum of the roll is:  " + 
+                    "\n      A) 7 or 11, they win\n      B) 2, 3, or 12, they lose\nC) any other number (termed a \"point number\"), they keep re-rolling until:\n      i) they roll the point number again, without having rolled a 7. In this case, they win." +
+                    "\n      ii) they roll a 7, without having rolled the point number. In this case, they lose.", "Instructions", JOptionPane.PLAIN_MESSAGE);
                 }
 
             }
@@ -528,9 +532,7 @@ public class Craps extends JFrame
                         players.get(currentPlayerIndex).getName() + "'s bet is not a natural number");
                 return;
             }
-
         }
-
     }
 
     private class BetFieldListener implements ActionListener

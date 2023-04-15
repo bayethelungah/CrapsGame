@@ -64,16 +64,10 @@ public class Game
                 }
                 itr.remove();
             }
+            else if(p.getIsShooter()){
+                p.setIsShooter(false);
+            }
         }
-        //had to use iterator because you cant remove things from a list that you are looping through
-        // for (Player player : playerList)
-        // {
-        //     if (player.getBankBalance() <= 0)
-        //     {
-        //         playerList.remove(player);
-        //     }
-        // }
-
         if (playerList.size() == 1)
             isOver = true;
         return shooterDeleted;
@@ -81,12 +75,6 @@ public class Game
 
     public void updateShooterIndex(boolean shooterRemoved, boolean shootingAgain)
     {
-        
-        try {
-            playerList.get(shooterIndex).setIsShooter(false);
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("player was removed. cannot access index of removed player");
-        }
         if(!shooterRemoved){
             if(shootingAgain){
                 shooterIndex = shooterIndex % playerList.size();
